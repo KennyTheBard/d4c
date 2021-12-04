@@ -6,9 +6,7 @@ export class ElasticSearchService {
 
 	public constructor(host: string, port: string, log: string, apiVersion: string) {
 		const client = new es.Client({
-			host: host + ':' + port,
-			log: log,
-			apiVersion: apiVersion,
+			node: host + ':' + port
 		});
 
 		this.client = client;
@@ -16,7 +14,7 @@ export class ElasticSearchService {
 
 	public async checkConnection() {
 		try {
-			await this.client.ping({ requestTimeout: 1000 });
+			await this.client.ping({ }, { requestTimeout: 1000 });
 		} catch (error) {
 			console.log(error);
 		}
@@ -46,7 +44,8 @@ export class ElasticSearchService {
 				}
 			});
 
-			for (const responseMessage of response.hits.hits) {
+			
+			for (const responseMessage of response.body.hits.hits) {
 				console.log(responseMessage);
 			}
 

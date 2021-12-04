@@ -1,4 +1,3 @@
-import es from 'elasticsearch';
 import express from 'express';
 import * as dotenv from 'dotenv';
 import { ElasticSearchService } from './service/elastic-search-service'
