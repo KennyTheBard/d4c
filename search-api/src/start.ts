@@ -12,11 +12,6 @@ import { logger } from './util/logger';
 	const es = new ElasticSearchService(process.env.ES_HOST, process.env.ES_PORT);
 	await es.checkConnection();
 
-	// es.saveJob({
-	// 	name: 'george',
-	// 	date: Date.now()
-	// });
-
 	const app = express();
 	app.use(express.json());
    app.use(cors());
@@ -44,6 +39,8 @@ import { logger } from './util/logger';
 			res.status(400).json(e);
 		}
    });
+
+	await es.searchJob('Developer');
 
 	const port = process.env.EXPRESS_PORT;
 	app.listen(port, () => logger.info(`App listening on port ${port}`));

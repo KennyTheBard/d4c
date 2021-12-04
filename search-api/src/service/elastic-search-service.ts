@@ -48,36 +48,20 @@ export class ElasticSearchService {
 		skip?: number,
 		pageSize?: number,
 	) {
-		const searchWords = searchPhrase.split(' ');
 		const searchFields = [
 			'title', 'description', 'jobFunction', 'industries', 'senorityLevel'
 		]
-		try {
-			logger.debug({
-				query: {
-					bool: {
-						should: searchFields.flatMap(field => searchWords.map(word => {
-							return {
-								match: {
-									[field]: word
-								}
-							}
-						}))
-					}
-				}
-			});
+		try {			
 			const response = await this.client.search({
 				index: 'job',
 				from: skip ?? 0,
 				size: pageSize ?? 20,
 				body: {
 					query: {
-						bool: {
-							must: {
-								query_string: {
-									query: searchPhrase
-								}
-							}
+						multi_match: {
+							query: searchPhrase,
+							fields: searchFields,
+							type: 'most_fields',
 						}
 					}
 				}
