@@ -1,14 +1,14 @@
+import { JobListing } from './../@types/types.d';
 import es from '@elastic/elasticsearch';
+import { logger } from '../util/logger';
+
 
 export class ElasticSearchService {
 	private client: es.Client;
-	private responses: Array<any>;
 
-	public constructor(host: string, port: string, log: string, apiVersion: string) {
+	public constructor(host: string, port: string) {
 		const client = new es.Client({
-			host: host + ':' + port,
-			log: log,
-			apiVersion: apiVersion,
+			node: `${host}:${port}`
 		});
 
 		this.client = client;
@@ -16,47 +16,82 @@ export class ElasticSearchService {
 
 	public async checkConnection() {
 		try {
-			await this.client.ping({ requestTimeout: 1000 });
+			await this.client.ping({}, { requestTimeout: 1000 });
 		} catch (error) {
 			console.log(error);
 		}
 	}
 
-	public async save(response: any) {
-		this.responses.push(response);
-		await this.client.index({
-			index: 'job-listing',
-			body: {
-				...response
+	// TODO: duplicate search/save for job/candidate
+
+	public async saveJob(job: JobListing) {
+		try {
+			await this.client.index({
+				index: 'job',
+				id: `${job.source}-${job.jobId}`,
+				op_type: 'create',
+				body: {
+					...job
+				}
+			})
+		} catch (error) {
+			if (error?.body?.error?.root_cause[0].type === 'version_conflict_engine_exception') {
+				logger.info('Duplicate job listing ignored');
+			} else {
+				logger.error('Error on saving job listing', JSON.stringify(error, null, 2));
 			}
-		})
+		}
 	}
 
-	public async search(index: string, type: string, body: string) {
+	public async searchJob(
+		searchPhrase: string,
+		skip?: number,
+		pageSize?: number,
+	) {
+		const searchWords = searchPhrase.split(' ');
+		const searchFields = [
+			'title', 'description', 'jobFunction', 'industries', 'senorityLevel'
+		]
 		try {
+			logger.debug({
+				query: {
+					bool: {
+						should: searchFields.flatMap(field => searchWords.map(word => {
+							return {
+								match: {
+									[field]: word
+								}
+							}
+						}))
+					}
+				}
+			});
 			const response = await this.client.search({
-				index: index,
-				type: type,
+				index: 'job',
+				from: skip ?? 0,
+				size: pageSize ?? 20,
 				body: {
 					query: {
-						match: {
-							body: body
+						bool: {
+							must: {
+								query_string: {
+									query: searchPhrase
+								}
+							}
 						}
 					}
 				}
 			});
 
-			for (const responseMessage of response.hits.hits) {
-				console.log(responseMessage);
-			}
+			logger.debug(response.body.hits.hits);
 
 			return response;
 		} catch (error) {
-			console.trace(error.message)
+			logger.error(error)
 		}
 	}
 
-	
+
 	public getClient() {
 		return this.client;
 	}
@@ -66,4 +101,4 @@ export class ElasticSearchService {
 
 
 
-// create 2 routes with expres => not here =? in a file called routes/ or start.
+// create 2 routes with expres => not here => in a file called routes/ or start.
