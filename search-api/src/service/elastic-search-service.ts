@@ -1,7 +1,7 @@
-import es from 'elasticsearch';
+import es from '@elastic/elasticsearch';
 
 export class ElasticSearchService {
-	private client: any;
+	private client: es.Client;
 	private responses: Array<any>;
 
 	public constructor(host: string, port: string, log: string, apiVersion: string) {
@@ -22,8 +22,14 @@ export class ElasticSearchService {
 		}
 	}
 
-	public save(response: any) {
+	public async save(response: any) {
 		this.responses.push(response);
+		await this.client.index({
+			index: 'job-listing',
+			body: {
+				...response
+			}
+		})
 	}
 
 	public async search(index: string, type: string, body: string) {

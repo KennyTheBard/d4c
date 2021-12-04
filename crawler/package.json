@@ -1,11 +1,19 @@
 {
-  "name": "crawler",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "",
-  "license": "ISC"
+    "name": "crawler",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "build": "tsc",
+        "watch": "tsc -w",
+        "start": "nodemon build/start.js",
+        "start-prod": "node build/start.js"
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "linkedin-jobs-scraper": "^8.0.0",
+        "typed-emitter": "^1.4.0",
+        "typescript": "^4.5.2"
+    }
 }
