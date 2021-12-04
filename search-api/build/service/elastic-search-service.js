@@ -14,10 +14,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ElasticSearchService = void 0;
 const elasticsearch_1 = __importDefault(require("@elastic/elasticsearch"));
+const logger_1 = require("../util/logger");
 class ElasticSearchService {
-    constructor(host, port, log, apiVersion) {
+    constructor(host, port) {
         const client = new elasticsearch_1.default.Client({
-            node: host + ':' + port
+            node: `${host}:${port}`
         });
         this.client = client;
     }
@@ -31,42 +32,69 @@ class ElasticSearchService {
             }
         });
     }
-    save(response) {
+    // TODO: duplicate search/save for job/candidate
+    saveJob(job) {
+        var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 yield this.client.index({
-                    index: 'job-listing',
-                    id: 'cercel',
+                    index: 'job',
+                    id: `${job.source}-${job.jobId}`,
                     op_type: 'create',
-                    body: Object.assign({}, response)
+                    body: Object.assign({}, job)
                 });
             }
             catch (error) {
-                console.log(error.body.error);
+                if (((_b = (_a = error === null || error === void 0 ? void 0 : error.body) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.root_cause[0].type) === 'version_conflict_engine_exception') {
+                    logger_1.logger.info('Duplicate job listing ignored');
+                }
+                else {
+                    logger_1.logger.error('Error on saving job listing', JSON.stringify(error, null, 2));
+                }
             }
         });
     }
-    search(index, type, body) {
+    searchJob(searchPhrase, skip, pageSize) {
         return __awaiter(this, void 0, void 0, function* () {
+            const searchWords = searchPhrase.split(' ');
+            const searchFields = [
+                'title', 'description', 'jobFunction', 'industries', 'senorityLevel'
+            ];
             try {
+                logger_1.logger.debug({
+                    query: {
+                        bool: {
+                            should: searchFields.flatMap(field => searchWords.map(word => {
+                                return {
+                                    match: {
+                                        [field]: word
+                                    }
+                                };
+                            }))
+                        }
+                    }
+                });
                 const response = yield this.client.search({
-                    index: index,
-                    type: type,
+                    index: 'job',
+                    from: skip !== null && skip !== void 0 ? skip : 0,
+                    size: pageSize !== null && pageSize !== void 0 ? pageSize : 20,
                     body: {
                         query: {
-                            match: {
-                                body: body
+                            bool: {
+                                must: {
+                                    query_string: {
+                                        query: searchPhrase
+                                    }
+                                }
                             }
                         }
                     }
                 });
-                for (const responseMessage of response.body.hits.hits) {
-                    console.log(responseMessage);
-                }
+                logger_1.logger.debug(response.body.hits.hits);
                 return response;
             }
             catch (error) {
-                console.trace(error.message);
+                logger_1.logger.error(error);
             }
         });
     }

@@ -34,15 +34,38 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const dotenv = __importStar(require("dotenv"));
 const elastic_search_service_1 = require("./service/elastic-search-service");
+const cors_1 = __importDefault(require("cors"));
+const logger_1 = require("./util/logger");
 (() => __awaiter(void 0, void 0, void 0, function* () {
     dotenv.config();
-    let elasticSearchService = new elastic_search_service_1.ElasticSearchService('http://127.0.0.1', '9200', 'trace', '7.2');
-    yield elasticSearchService.checkConnection();
+    const es = new elastic_search_service_1.ElasticSearchService(process.env.ES_HOST, process.env.ES_PORT);
+    yield es.checkConnection();
+    // es.saveJob({
+    // 	name: 'george',
+    // 	date: Date.now()
+    // });
     const app = (0, express_1.default)();
-    elasticSearchService.save({
-        name: 'george',
-        date: Date.now()
-    });
-    app.listen(3000, () => console.log("Hakuna matata!"));
+    app.use(express_1.default.json());
+    app.use((0, cors_1.default)());
+    app.post('/save-job', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        try {
+            yield es.saveJob(req.body);
+        }
+        catch (e) {
+            res.status(400).json(e);
+        }
+        res.status(200).send();
+    }));
+    app.post('/search-job', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        const { searchPhrase, skip, pageSize } = req.body;
+        try {
+            res.status(200).send(yield es.searchJob(searchPhrase, skip, pageSize));
+        }
+        catch (e) {
+            res.status(400).json(e);
+        }
+    }));
+    const port = process.env.EXPRESS_PORT;
+    app.listen(port, () => logger_1.logger.info(`App listening on port ${port}`));
 }))();
 //# sourceMappingURL=start.js.map
