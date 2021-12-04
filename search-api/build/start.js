@@ -36,9 +36,13 @@ const dotenv = __importStar(require("dotenv"));
 const elastic_search_service_1 = require("./service/elastic-search-service");
 (() => __awaiter(void 0, void 0, void 0, function* () {
     dotenv.config();
-    let elasticSearchService = new elastic_search_service_1.ElasticSearchService('localhost', '9200', 'trace', '7.2');
+    let elasticSearchService = new elastic_search_service_1.ElasticSearchService('http://127.0.0.1', '9200', 'trace', '7.2');
     yield elasticSearchService.checkConnection();
     const app = (0, express_1.default)();
+    elasticSearchService.save({
+        name: 'george',
+        date: Date.now()
+    });
     app.listen(3000, () => console.log("Hakuna matata!"));
 }))();
 //# sourceMappingURL=start.js.map

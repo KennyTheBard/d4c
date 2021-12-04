@@ -33,11 +33,17 @@ class ElasticSearchService {
     }
     save(response) {
         return __awaiter(this, void 0, void 0, function* () {
-            this.responses.push(response);
-            yield this.client.index({
-                index: 'job-listing',
-                body: Object.assign({}, response)
-            });
+            try {
+                yield this.client.index({
+                    index: 'job-listing',
+                    id: 'cercel',
+                    op_type: 'create',
+                    body: Object.assign({}, response)
+                });
+            }
+            catch (error) {
+                console.log(error.body.error);
+            }
         });
     }
     search(index, type, body) {
@@ -69,5 +75,5 @@ class ElasticSearchService {
     }
 }
 exports.ElasticSearchService = ElasticSearchService;
-// create 2 routes with expres => not here =? in a file called routes/ or start.
+// create 2 routes with expres => not here => in a file called routes/ or start.
 //# sourceMappingURL=elastic-search-service.js.map

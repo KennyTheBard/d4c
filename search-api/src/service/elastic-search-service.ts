@@ -20,14 +20,23 @@ export class ElasticSearchService {
 		}
 	}
 
+	// duplicate search/save for job/candidate
+
 	public async save(response: any) {
-		this.responses.push(response);
-		await this.client.index({
-			index: 'job-listing',
-			body: {
-				...response
-			}
-		})
+		try {
+			await this.client.index({
+				index: 'job-listing',
+				id: 'cercel',
+				op_type: 'create',
+				body: {
+					...response
+				}
+			})
+		} catch (error) {
+			console.log(error.body.error)
+		}
+		
+
 	}
 
 	public async search(index: string, type: string, body: string) {
@@ -65,4 +74,4 @@ export class ElasticSearchService {
 
 
 
-// create 2 routes with expres => not here =? in a file called routes/ or start.
+// create 2 routes with expres => not here => in a file called routes/ or start.
