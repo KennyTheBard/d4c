@@ -4,12 +4,22 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc",
+    "watch": "tsc -w",
+    "start": "nodemon -r dotenv/config build/start.js",
+    "start-prod": "node -r dotenv/config build/start.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "dotenv": "^10.0.0",
     "elasticsearch": "^16.7.2",
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "typescript": "^4.5.2"
+  },
+  "devDependencies": {
+    "@types/node": "^16.11.11",
+    "nodemon": "^2.0.15",
+    "tsc": "^2.0.3"
   }
 }
