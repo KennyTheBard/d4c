@@ -13,23 +13,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ElasticSearchService = void 0;
-const elasticsearch_1 = __importDefault(require("elasticsearch"));
+const elasticsearch_1 = __importDefault(require("@elastic/elasticsearch"));
 class ElasticSearchService {
     constructor(host, port, log, apiVersion) {
-        console.log('CONSTRUCTOR CALLED');
         const client = new elasticsearch_1.default.Client({
-            host: host + ':' + port,
-            log: log,
-            apiVersion: apiVersion,
+            node: host + ':' + port
         });
         this.client = client;
-        this.checkConnection();
     }
     checkConnection() {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log('CHECK CONNECTION CALLED');
             try {
-                yield this.client.ping({ requestTimeout: 1000 });
+                yield this.client.ping({}, { requestTimeout: 1000 });
             }
             catch (error) {
                 console.log(error);
@@ -37,7 +32,13 @@ class ElasticSearchService {
         });
     }
     save(response) {
-        this.responses.push(response);
+        return __awaiter(this, void 0, void 0, function* () {
+            this.responses.push(response);
+            yield this.client.index({
+                index: 'job-listing',
+                body: Object.assign({}, response)
+            });
+        });
     }
     search(index, type, body) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -53,7 +54,7 @@ class ElasticSearchService {
                         }
                     }
                 });
-                for (const responseMessage of response.hits.hits) {
+                for (const responseMessage of response.body.hits.hits) {
                     console.log(responseMessage);
                 }
                 return response;
