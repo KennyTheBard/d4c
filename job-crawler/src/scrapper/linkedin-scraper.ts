@@ -5,43 +5,31 @@ import {
 
 export class LinkedInScraper {
 
+   private readonly idSet: Set<string> = new Set();
+
    constructor() {}
 
    public async scrap(
-      loactions: string[],
+      locations: string[],
       sender: (job: any) => Promise<void>
    ) {
       // Each scraper instance is associated with one browser.
       // Concurrent queries will run on different pages within the same browser instance.
       const scraper = new LinkedinScraper({
          headless: true,
-         slowMo: 500,
+         slowMo: 350,
          args: [
             "--lang=en-GB",
          ],
       });
 
       // Add listeners for scraper events
-      scraper.on(events.scraper.data, (data) => {
-         console.log(
-            
-            data.description.length,
-            data.descriptionHTML.length,
-            `Query='${data.query}'`,
-            `Location='${data.location}'`,
-            `Id='${data.jobId}'`,
-            `Title='${data.title}'`,
-            `Company='${data.company ? data.company : "N/A"}'`,
-            `Place='${data.place}'`,
-            `Date='${data.date}'`,
-            `Link='${data.link}'`,
-            `applyLink='${data.applyLink ? data.applyLink : "N/A"}'`,
-            `senorityLevel='${data.senorityLevel}'`,
-            `function='${data.jobFunction}'`,
-            `employmentType='${data.employmentType}'`,
-            `industries='${data.industries}'`,
-            `descriprion='${data.description}'`
-         );
+      scraper.on(events.scraper.data, async (data) => {
+         if (this.idSet.has(data.jobId)) {
+            return;
+         }
+         await sender(data);
+         this.idSet.add(data.jobId);
       });
 
       scraper.on(events.scraper.error, (err) => {
@@ -67,12 +55,15 @@ export class LinkedInScraper {
          // Run queries serially
          scraper.run([
             {
-               query: "Developer",
+               query: 'Developer'
             },
          ], { // Global options for this run, will be merged individually with each query options (if any)
-            locations: loactions,
+            locations: locations,
             optimize: true,
-            limit: 1000,
+            limit: 100,
+            filters: {
+               time: ''
+            }
          }),
       ]);
 
