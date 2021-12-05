@@ -1,70 +1,70 @@
 .App {
-  text-align: center;
-  width: 100%;
+    text-align: center;
+    width: 100%;
 }
 
 .App-logo {
-  height: 40vmin;
-  pointer-events: none;
+    height: 40vmin;
+    pointer-events: none;
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+    .App-logo {
+        animation: App-logo-spin infinite 20s linear;
+    }
 }
 
 .App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  /* font-size: calc(10px + 2vmin);
+    background-color: #282c34;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* font-size: calc(10px + 2vmin);
   color: white; */
 }
 
 .App-link {
-  color: #61dafb;
-} 
-
-.input-group{
-  width:80% !important;
+    color: #61dafb;
 }
 
-.navigationButtons{
-  width: 100px;
-
+.input-group {
+    width: 80% !important;
 }
-.pageNavigation{
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  width: 80rem;
-  padding-bottom: 2rem;
-  padding-top: 1rem;
+
+.navigationButtons {
+    width: 100px;
+}
+
+.pageNavigation {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 80rem;
+    padding-bottom: 2rem;
+    padding-top: 1rem;
 }
 
 .table {
-  width: 80% !important;
+    width: 80% !important;
 }
 
-
-.employmentDetails{
-  display: inline-block;
-  width: 33%;
+.employmentDetails {
+    display: inline-block;
+    width: 33%;
 }
 
-.cardsDetails{
-  width: 80rem;
-  text-align: left;
-  padding: 10px 10px;
-}
-.pageNumber{
-  color: white !important;
+.cardsDetails {
+    width: 80rem;
+    text-align: left;
+    padding: 10px 10px;
 }
 
-.searchBar{
-  padding-bottom: 1rem;
-  padding-top: 2rem;
+.pageNumber {
+    color: white !important;
+}
+
+.searchBar {
+    padding-bottom: 1rem;
+    padding-top: 2rem;
 }

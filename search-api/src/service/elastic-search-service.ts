@@ -67,9 +67,7 @@ export class ElasticSearchService {
 				}
 			});
 
-			logger.debug(response.body.hits.hits);
-
-			return response;
+			return response.body?.hits?.hits?.map(h => h._source).filter(h => !!h) ?? [];
 		} catch (error) {
 			logger.error(error)
 		}
