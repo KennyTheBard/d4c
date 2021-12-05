@@ -63,7 +63,10 @@ export class ElasticSearchService {
 							fields: searchFields,
 							type: 'most_fields',
 						}
-					}
+					},
+					sort: [
+						{ _score: 'desc' }
+					]
 				}
 			});
 
