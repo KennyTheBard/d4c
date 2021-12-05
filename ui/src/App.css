@@ -20,8 +20,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  /* font-size: calc(10px + 2vmin);
+  color: white; */
 }
 
 .App-link {
@@ -31,18 +31,40 @@
 .input-group{
   width:80% !important;
 }
-.searchFormElement
-{
-    display: inline-block;
-}
 
 .navigationButtons{
-  display: inline-block;
+  width: 100px;
+
+}
+.pageNavigation{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 80rem;
+  padding-bottom: 2rem;
+  padding-top: 1rem;
 }
 
-.pageNavigation{
-  height: 100px; 
-  width:100%;
-  position: absolute;
-  bottom: 0; 
+.table {
+  width: 80% !important;
+}
+
+
+.employmentDetails{
+  display: inline-block;
+  width: 33%;
+}
+
+.cardsDetails{
+  width: 80rem;
+  text-align: left;
+  padding: 10px 10px;
+}
+.pageNumber{
+  color: white !important;
+}
+
+.searchBar{
+  padding-bottom: 1rem;
+  padding-top: 2rem;
 }
