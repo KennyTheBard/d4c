@@ -17,6 +17,7 @@ import { logger } from './util/logger';
    app.use(cors());
 
 	app.post('/save-job', async (req: Request, res: Response) => {
+		logger.debug('Save new job');
 		try {
 			await es.saveJob(req.body);
 		} catch (e) {
@@ -26,21 +27,20 @@ import { logger } from './util/logger';
       res.status(200).send();
    });
 
-	app.post('/search-job', async (req: Request, res: Response) => {
-		const {
-			searchPhrase,
-			skip,
-			pageSize
-		} = req.body;
-
+	app.get('/search-job', async (req: Request, res: Response) => {
+		logger.debug('Search jobs');
 		try {
-			res.status(200).send(await es.searchJob(searchPhrase, skip, pageSize));
+			res.status(200).send(
+				await es.searchJob(
+					req.query.searchPhrase as string,
+					req.query.skip && +req.query.skip,
+					req.query.pageSize && +req.query.pageSize
+				)
+			);
 		} catch (e) {
 			res.status(400).json(e);
 		}
    });
-
-	await es.searchJob('Developer');
 
 	const port = process.env.EXPRESS_PORT;
 	app.listen(port, () => logger.info(`App listening on port ${port}`));

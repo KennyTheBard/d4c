@@ -1,0 +1,12 @@
+@HOST=localhost
+
+###
+GET http://localhost:8000/search-job?searchPhrase=test
+
+
+###
+POST http://localhost:8000/save-job
+
+{
+
+}
