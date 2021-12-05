@@ -1,5 +1,6 @@
 .App {
   text-align: center;
+  width: 100%;
 }
 
 .App-logo {
@@ -19,20 +20,51 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  /* font-size: calc(10px + 2vmin);
+  color: white; */
 }
 
 .App-link {
   color: #61dafb;
+} 
+
+.input-group{
+  width:80% !important;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.navigationButtons{
+  width: 100px;
+
+}
+.pageNavigation{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 80rem;
+  padding-bottom: 2rem;
+  padding-top: 1rem;
+}
+
+.table {
+  width: 80% !important;
+}
+
+
+.employmentDetails{
+  display: inline-block;
+  width: 33%;
+}
+
+.cardsDetails{
+  width: 80rem;
+  text-align: left;
+  padding: 10px 10px;
+}
+.pageNumber{
+  color: white !important;
+}
+
+.searchBar{
+  padding-bottom: 1rem;
+  padding-top: 2rem;
 }
