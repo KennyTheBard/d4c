@@ -12,16 +12,21 @@ const send = async (data: any) => {
    );
 }
 
+const LOCATIONS = ['Romania', 'Hungary', 'Estonia', 'Bulgaria', 'Italy', 'France', 'United Kingdom', 'California', 'New Tork', 'Denmark', 'Belgium', 'Spain', 'Mexico'];
+const QUERIES = ['Developer', 'Engineer', 'Sales', 'Manager', 'Analyst', 'Admin', 'DevOp', 'QA'];
+
+
 (async () => {
    dotenv.config();
 
    const linkedInScrapper = new LinkedInScraper();
 
-   scheduleJob('0 */10 * * * *', async () => {
-      await linkedInScrapper.scrap(
-         ['United States', 'Europe'],
-         ['Developer', 'Engineer', 'Sales', 'Manager', 'Analyst', 'Admin', 'DevOp', 'QA'],
-         send
-      );
-   });
+   const scrap = async () => await linkedInScrapper.scrap(
+      LOCATIONS,
+      QUERIES,
+      send
+   );
+   await scrap();
+
+   scheduleJob('0 */5 * * * *', async () => await scrap());
 })();

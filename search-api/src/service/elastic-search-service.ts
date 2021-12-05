@@ -49,7 +49,7 @@ export class ElasticSearchService {
 		pageSize?: number,
 	) {
 		const searchFields = [
-			'title', 'description', 'jobFunction', 'industries', 'senorityLevel'
+			'title', 'description', 'jobFunction', 'industries', 'senorityLevel', 'place', 'company'
 		]
 		try {			
 			const response = await this.client.search({

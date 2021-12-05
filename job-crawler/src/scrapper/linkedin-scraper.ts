@@ -11,7 +11,7 @@ export class LinkedInScraper {
    constructor() {
       this.scraper = new LinkedinScraper({
          headless: true,
-         slowMo: 2000,
+         slowMo: 500,
          args: [
             "--lang=en-GB",
          ],
@@ -55,20 +55,20 @@ export class LinkedInScraper {
       });
 
       // Run queries concurrently    
-      await Promise.all(queries.map(q => {
-         return this.scraper.run([
-            {
+      await Promise.all([
+         this.scraper.run(queries.map(q => {
+            return {
                query: q
-            }
-         ], { // Global options for this run, will be merged individually with each query options (if any)
+            };
+         }), {
             locations: locations,
             optimize: true,
-            limit: 100,
+            limit: 1000,
             filters: {
                time: ''
             }
-         });
-      }));
+         })
+      ]);
    }
 
    async close() {

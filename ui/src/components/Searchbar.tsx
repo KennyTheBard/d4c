@@ -94,7 +94,7 @@ export class Searchbar extends React.Component {
           />
 
           <Button variant="outline-success" className="searchSubmitButton" onClick={this.handleSubmit}>
-            Search
+            D4C Search
           </Button>
 
         </InputGroup>
